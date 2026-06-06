@@ -3,33 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İstanbul Kesinti Takip Paneli</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- İkonlar için FontAwesome -->
+    <title>KesintiVar | İstanbul Anlık Kesinti Haritası</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="container">
-        <header>
-            <h1><i class="fa-solid fa-triangle-exclamation animate-pulse"></i> İstanbul Kesinti Takip</h1>
-            <p>Şehrinizdeki güncel elektrik ve su kesintilerini anlık olarak takip edin.</p>
-        </header>
-
-        <!-- Filtreleme Butonları -->
-        <div class="filters">
-            <button class="filter-btn active" onclick="filterKesinti('all')">Tümü</button>
-            <button class="filter-btn elektrik" onclick="filterKesinti('elektrik')"><i class="fa-solid fa-bolt"></i> Elektrik</button>
-            <button class="filter-btn su" onclick="filterKesinti('su')"><i class="fa-solid fa-droplet"></i> Su</button>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <i class="fa-solid fa-triangle-exclamation animate-pulse"></i>
+                <h1>Kesinti<span>Var</span></h1>
+            </div>
+            <p class="subtitle">İstanbul Anlık Elektrik & Su Kesintisi Takip Sistemi</p>
         </div>
+    </header>
 
-        <!-- Kesinti Kartlarının Geleceği Alan -->
-        <div id="kesinti-listesi" class="kesinti-grid">
-            <!-- JavaScript burayı dolduracak -->
-            <div class="loading">Veriler yükleniyor...</div>
-        </div>
-    </div>
+    <main class="container">
+        <section class="map-section">
+            <div class="section-title">
+                <i class="fa-solid fa-map-location-dot"></i>
+                <h2>Canlı Kesinti Haritası</h2>
+            </div>
+            <div id="map"></div>
+        </section>
 
+        <section class="list-section">
+            <div class="section-title">
+                <i class="fa-solid fa-list-ul"></i>
+                <h2>Kesinti Detayları</h2>
+            </div>
+            <div id="kesinti-listesi">
+                <div class="loading">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i> Veriler yükleniyor ve haritaya işleniyor...
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Efe Studios. Tüm Hakları Saklıdır.</p>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
