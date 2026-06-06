@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000/api/kesintiler';
+const API_URL = 'https://kesintivar-backend.onrender.com';
 let tumKesintiler = []; // Verileri hafızada tutmak için
 
 // Backend'den canlı verileri çeken fonksiyon
