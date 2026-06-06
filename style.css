@@ -1,136 +1,209 @@
-:root {
-    --bg-color: #0f172a;
-    --card-bg: #1e293b;
-    --text-color: #f8fafc;
-    --text-muted: #94a3b8;
-    --elektrik-color: #eab308;
-    --su-color: #38bdf8;
-}
-
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Poppins', sans-serif;
 }
 
 body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    padding: 20px;
+    background-color: #0f172a;
+    color: #e2e8f0;
+    line-height: 1.6;
 }
 
 .container {
-    max-width: 1000px;
+    max-width: 1200px;
     margin: 0 auto;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
 }
 
+/* Masaüstü ekranlarda harita ve listeyi yan yana ya da alt alta güzelce dizer */
+@media (min-width: 992px) {
+    .container {
+        grid-template-columns: 2fr 1fr;
+        align-items: start;
+    }
+}
+
+/* Header Tasarımı */
 header {
+    background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
+    border-bottom: 2px solid #312e81;
+    padding: 30px 20px;
     text-align: center;
-    margin-bottom: 40px;
-    margin-top: 20px;
 }
 
-header h1 {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
-}
-
-header p {
-    color: var(--text-muted);
-}
-
-.animate-pulse {
-    color: #ef4444;
-}
-
-/* Filtre Butonları */
-.filters {
+.logo {
     display: flex;
     justify-content: center;
+    align-items: center;
     gap: 15px;
-    margin-bottom: 30px;
+    margin-bottom: 5px;
 }
 
-.filter-btn {
-    background: var(--card-bg);
-    border: 2px solid transparent;
-    color: var(--text-color);
-    padding: 10px 25px;
-    border-radius: 30px;
-    cursor: pointer;
+.logo i {
+    color: #f59e0b;
+    font-size: 2.5rem;
+}
+
+.logo h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+}
+
+.logo h1 span {
+    color: #3b82f6;
+}
+
+.subtitle {
+    color: #94a3b8;
+    font-size: 1rem;
+}
+
+/* Başlık stilleri */
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.section-title h2 {
+    font-size: 1.3rem;
     font-weight: 600;
-    transition: all 0.3s ease;
+    color: #f8fafc;
 }
 
-.filter-btn:hover {
-    transform: translateY(-2px);
+.section-title i {
+    color: #3b82f6;
 }
 
-.filter-btn.active {
-    border-color: #f8fafc;
+/* HARİTA TASARIMI */
+#map {
+    height: 450px;
+    width: 100%;
+    border-radius: 16px;
+    border: 2px solid #1e293b;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    z-index: 1;
 }
 
-.filter-btn.elektrik:hover, .filter-btn.elektrik.active { background: var(--elektrik-color); color: #000; }
-.filter-btn.su:hover, .filter-btn.su.active { background: var(--su-color); color: #000; }
-
-/* Kesinti Kartları */
-.kesinti-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
+/* Kesinti Kartları Listesi */
+#kesinti-listesi {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-height: 450px;
+    overflow-y: auto;
+    padding-right: 5px;
 }
 
+/* Scrollbar özelleştirme */
+#kesinti-listesi::-webkit-scrollbar {
+    width: 6px;
+}
+#kesinti-listesi::-webkit-scrollbar-thumb {
+    background-color: #334155;
+    border-radius: 10px;
+}
+
+/* Kart Tasarımları */
 .card {
-    background: var(--card-bg);
+    background-color: #1e293b;
     border-radius: 12px;
-    padding: 20px;
-    border-left: 5px solid transparent;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
+    border-left: 5px solid #64748b;
+    padding: 15px;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .card:hover {
-    transform: scale(1.02);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-.card.elektrik { border-left-color: var(--elektrik-color); }
-.card.su { border-left-color: var(--su-color); }
+.card.elektrik {
+    border-left-color: #eab308;
+}
+
+.card.su {
+    border-left-color: #0ea5e9;
+}
 
 .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .card-title {
-    font-size: 1.2rem;
-    font-weight: bold;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #f8fafc;
 }
 
 .badge {
     padding: 4px 8px;
     border-radius: 6px;
-    font-size: 0.8rem;
-    font-weight: bold;
+    font-size: 0.75rem;
+    font-weight: 700;
 }
 
-.card.elektrik .badge { background: rgba(234, 179, 8, 0.2); color: var(--elektrik-color); }
-.card.su .badge { background: rgba(56, 189, 248, 0.2); color: var(--su-color); }
+.elektrik .badge {
+    background-color: rgba(234, 179, 8, 0.15);
+    color: #fde047;
+}
+
+.su .badge {
+    background-color: rgba(14, 165, 233, 0.15);
+    color: #7dd3fc;
+}
 
 .card-body p {
-    margin-bottom: 8px;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+    color: #cbd5e1;
+    margin-bottom: 5px;
 }
 
-.card-body strong {
-    color: var(--text-muted);
+.card-body .desc {
+    color: #94a3b8;
+    font-size: 0.85rem;
+    border-top: 1px solid #334155;
+    padding-top: 5px;
+    margin-top: 8px;
 }
 
+/* Yükleniyor Efekti */
 .loading {
-    grid-column: 1 / -1;
     text-align: center;
     padding: 40px;
-    color: var(--text-muted);
+    color: #94a3b8;
+    font-size: 1rem;
+}
+
+.loading i {
+    margin-right: 8px;
+    color: #3b82f6;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #64748b;
+    font-size: 0.85rem;
+    margin-top: 40px;
+    border-top: 1px solid #1e293b;
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .5; }
 }
