@@ -1,104 +1,80 @@
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
-require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 10000;
 
+// Vercel'den (ve diğer dış kaynaklardan) gelen istek engellerini (CORS) kaldırıyoruz
 app.use(cors());
-app.use(express.json());
 
-// O anki tarihi "GG.AA.YYYY SAAT" formatına getiren dinamik fonksiyon (Boşluk hatası düzeltildi)
-function suAnkiTarihiGetir(ekstraSaat = 0) {
+// Tarih formatlama fonksiyonu (Sunucu logları ve API istekleri için)
+function suAnkiTarihiGetir() {
     const simdi = new Date();
-    simdi.setHours(simdi.getHours() + ekstraSaat); // Tahmini bitiş için saat ekleme
-
     const gun = String(simdi.getDate()).padStart(2, '0');
     const ay = String(simdi.getMonth() + 1).padStart(2, '0');
     const yil = simdi.getFullYear();
-    const saat = String(simdi.getHours()).padStart(2, '0');
-    const dakika = String(simdi.getMinutes()).padStart(2, '0');
-
-    return `${gun}.${ay}.${yil} ${saat}:${dakika}`;
+    return `${gun}.${ay}.${yil}`;
 }
 
-// 1. İSKİ Su Kesintilerini Çeken Fonksiyon
-async function getSuKesintileri() {
+// 1. İSKİ (Su Kesintileri) Verilerini Çeken Fonksiyon
+async function IskiKesintileriGetir() {
     try {
-        // Canlı İSKİ API entegrasyon noktası
-        const response = await axios.get('https://api.ibb.gov.tr/iski/kesintiler', { timeout: 5000 });
-        
-        return response.data.map(k => ({
-            id: `su-${k.ID || Math.random()}`,
-            tur: 'su',
-            ilce: k.ILCE,
-            mahalle: k.MAHALLELER,
-            neden: k.ACIKLAMA || 'Şebeke Arızası',
-            baslangic: k.TARIH || suAnkiTarihiGetir(-2), 
-            bitis: k.BITIS_TARIHI || suAnkiTarihiGetir(3)   
-        }));
+        const response = await axios.get('https://iski.gov.tr/web/api/v1/kesintiler');
+        // İSKİ API'sinden dönen ham veriyi kendi formatımıza çeviriyoruz
+        if (response.data && Array.isArray(response.data)) {
+            return response.data.map(k => ({
+                tur: 'su',
+                ilce: k.ilceAdi || 'Bilinmiyor',
+                mahalle: k.mahalleAdi || 'Tüm Mahalleler',
+                tarih: k.kesintiTarihi || suAnkiTarihiGetir(),
+                aciklama: k.aciklama || 'Arıza onarım çalışması.'
+            }));
+        }
+        return [];
     } catch (error) {
-        console.error("İSKİ canlı API hatası veya zaman aşımı, yedek veriler dinamik yükleniyor...");
-        
-        // API yanıt vermediğinde basılacak dinamik ve güncel yedek veri
-        return [{
-            id: 'su-fallback-beykoz',
-            tur: 'su',
-            ilce: 'Beykoz',
-            mahalle: 'Kavacık, Rüzgarlıbahçe',
-            neden: 'Ana İsale Hattı Arızası',
-            baslangic: suAnkiTarihiGetir(-1), 
-            bitis: suAnkiTarihiGetir(4)        
-        }];
-    }
-}
-
-// 2. Elektrik Kesintilerini Çeken Fonksiyon (BEDAŞ / AYEDAŞ)
-async function getElektrikKesintileri() {
-    try {
-        // Dağıtım şirketleri için simüle edilmiş dinamik canlı veri hattı
-        return [
-            {
-                id: 'elek-1',
-                tur: 'elektrik',
-                ilce: 'Kadıköy',
-                mahalle: 'Fenerbahçe Mah.',
-                neden: 'Kentsel Dönüşüm Hat Taşıma Çalışması',
-                baslangic: suAnkiTarihiGetir(-3), 
-                bitis: suAnkiTarihiGetir(2)        
-            },
-            {
-                id: 'elek-2',
-                tur: 'elektrik',
-                ilce: 'Avcılar',
-                mahalle: 'Ambarlı, Merkez',
-                neden: 'Yüksek Gerilim Hücresi Revizyonu',
-                baslangic: suAnkiTarihiGetir(0),  
-                bitis: suAnkiTarihiGetir(5)        
-            }
-        ];
-    } catch (error) {
-        console.error("Elektrik verisi çekilemedi:", error.message);
+        console.error('İSKİ API hatası:', error.message);
         return [];
     }
 }
 
-// Ana API Endpoint'imiz (Frontend buraya istek atacak)
+// 2. BEDAŞ (Elektrik Kesintileri) Verilerini Çeken Fonksiyon
+async function BedasKesintileriGetir() {
+    try {
+        const response = await axios.get('https://api.bedas.com.tr/v1/kesintiler/guncel');
+        if (response.data && Array.isArray(response.data)) {
+            return response.data.map(k => ({
+                tur: 'elektrik',
+                ilce: k.ilce || 'Bilinmiyor',
+                mahalle: k.mahalle || 'Tüm Mahalleler',
+                tarih: k.tarih || suAnkiTarihiGetir(),
+                aciklama: k.neden || 'Planlı bakım veya arıza çalışması.'
+            }));
+        }
+        return [];
+    } catch (error) {
+        console.error('BEDAŞ API hatası:', error.message);
+        return [];
+    }
+}
+
+// 3. Frontend'in (Vercel) Veri Çekeceği Ortak API Rotası
 app.get('/api/kesintiler', async (req, res) => {
-    console.log("Anlık kesinti talebi geldi, veriler toplanıyor...");
+    console.log(`[${suAnkiTarihiGetir()}] Yeni bir veri isteği geldi, veriler toplanıyor...`);
     
-    // İki kaynaktan da verileri aynı anda çekiyoruz
-    const [suVerisi, elektrikVerisi] = await Promise.all([
-        getSuKesintileri(),
-        getElektrikKesintileri()
+    // İki API'yi de aynı anda tetikliyoruz
+    const [suKesintileri, elektrikKesintileri] = await Promise.all([
+        IskiKesintileriGetir(),
+        BedasKesintileriGetir()
     ]);
 
-    // İki listeyi birleştirip tek bir dizi olarak frontend'e fırlatıyoruz
-    const tumKesintiler = [...suVerisi, ...elektrikVerisi];
+    // İki veriyi tek bir listede birleştiriyoruz
+    const tumKesintiler = [...suKesintileri, ...elektrikKesintileri];
+    
     res.json(tumKesintiler);
 });
 
+// Sunucuyu Başlatma
 app.listen(PORT, () => {
     console.log(`[BAŞARILI] Kesinti Takip Sunucusu http://localhost:${PORT} portunda aktif!`);
 });
