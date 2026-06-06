@@ -1,0 +1,136 @@
+:root {
+    --bg-color: #0f172a;
+    --card-bg: #1e293b;
+    --text-color: #f8fafc;
+    --text-muted: #94a3b8;
+    --elektrik-color: #eab308;
+    --su-color: #38bdf8;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    padding: 20px;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 40px;
+    margin-top: 20px;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+header p {
+    color: var(--text-muted);
+}
+
+.animate-pulse {
+    color: #ef4444;
+}
+
+/* Filtre Butonları */
+.filters {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.filter-btn {
+    background: var(--card-bg);
+    border: 2px solid transparent;
+    color: var(--text-color);
+    padding: 10px 25px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+    transform: translateY(-2px);
+}
+
+.filter-btn.active {
+    border-color: #f8fafc;
+}
+
+.filter-btn.elektrik:hover, .filter-btn.elektrik.active { background: var(--elektrik-color); color: #000; }
+.filter-btn.su:hover, .filter-btn.su.active { background: var(--su-color); color: #000; }
+
+/* Kesinti Kartları */
+.kesinti-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 20px;
+    border-left: 5px solid transparent;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+
+.card.elektrik { border-left-color: var(--elektrik-color); }
+.card.su { border-left-color: var(--su-color); }
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.badge {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.card.elektrik .badge { background: rgba(234, 179, 8, 0.2); color: var(--elektrik-color); }
+.card.su .badge { background: rgba(56, 189, 248, 0.2); color: var(--su-color); }
+
+.card-body p {
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.card-body strong {
+    color: var(--text-muted);
+}
+
+.loading {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    color: var(--text-muted);
+}

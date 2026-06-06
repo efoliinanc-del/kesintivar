@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İstanbul Kesinti Takip Paneli</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- İkonlar için FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1><i class="fa-solid fa-triangle-exclamation animate-pulse"></i> İstanbul Kesinti Takip</h1>
+            <p>Şehrinizdeki güncel elektrik ve su kesintilerini anlık olarak takip edin.</p>
+        </header>
+
+        <!-- Filtreleme Butonları -->
+        <div class="filters">
+            <button class="filter-btn active" onclick="filterKesinti('all')">Tümü</button>
+            <button class="filter-btn elektrik" onclick="filterKesinti('elektrik')"><i class="fa-solid fa-bolt"></i> Elektrik</button>
+            <button class="filter-btn su" onclick="filterKesinti('su')"><i class="fa-solid fa-droplet"></i> Su</button>
+        </div>
+
+        <!-- Kesinti Kartlarının Geleceği Alan -->
+        <div id="kesinti-listesi" class="kesinti-grid">
+            <!-- JavaScript burayı dolduracak -->
+            <div class="loading">Veriler yükleniyor...</div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
