@@ -7,8 +7,14 @@ const PORT = process.env.PORT || 10000;
 
 app.use(cors());
 
+// Resmi kurumların bizi bot sanıp engellememesi için tarayıcı taklidi yapıyoruz
 const apiIstemci = axios.create({
-    timeout: 4000
+    timeout: 7000, // Kurum siteleri yavaş açılırsa diye süreyi 7 saniyeye çıkardık
+    headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'application/json, text/plain, */*',
+        'Accept-Language': 'tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7'
+    }
 });
 
 function suAnkiTarihiGetir() {
@@ -19,58 +25,14 @@ function suAnkiTarihiGetir() {
     return `${gun}.${ay}.${yil}`;
 }
 
-// Gelişmiş Simüle Veriler (Resmi kurumlar yabancı IP engeli atarsa devreye girer)
-const testKesintileri = [
-    {
-        tur: 'elektrik',
-        kategori: 'ariza',
-        ilce: 'Beykoz',
-        mahalle: 'Kavacık Mahallesi, Otağtepe Caddesi',
-        tarih: suAnkiTarihiGetir() + ' 09:00 - 13:00',
-        aciklama: 'BEDAŞ: Şebeke üzerinde meydana gelen ani arıza nedeniyle kesinti.'
-    },
-    {
-        tur: 'su',
-        kategori: 'ariza',
-        ilce: 'Üsküdar',
-        mahalle: 'Mimar Sinan Mahallesi, Atlas Sokak',
-        tarih: suAnkiTarihiGetir() + ' 10:30 - 16:00',
-        aciklama: 'İSKİ: Ana isale hattında boru patlaması onarımı.'
-    },
-    {
-        tur: 'elektrik',
-        kategori: 'planli',
-        ilce: 'Kadıköy',
-        mahalle: 'Moda Caddesi ve civarı',
-        tarih: suAnkiTarihiGetir() + ' 14:00 - 18:00',
-        aciklama: 'AYEDAŞ: Yüksek gerilim hücre yenileme planlı bakım çalışması.'
-    },
-    {
-        tur: 'su',
-        kategori: 'planli',
-        ilce: 'Sarıyer',
-        mahalle: 'Tarabya Mahallesi, Dere içi',
-        tarih: suAnkiTarihiGetir() + ' 23:00 - 04:00',
-        aciklama: 'İSKİ: Depo temizliği ve vana değişim planlı çalışması.'
-    },
-    {
-        tur: 'elektrik',
-        kategori: 'planli',
-        ilce: 'Maltepe',
-        mahalle: 'Cevizli Mahallesi',
-        tarih: suAnkiTarihiGetir() + ' 08:30 - 12:30',
-        aciklama: 'AYEDAŞ: Yeni trafo bağlantısı nedeniyle planlı kesinti.'
-    }
-];
-
-// 1. İSKİ API
+// 1. İSKİ GERÇEK API
 async function IskiKesintileriGetir() {
     try {
+        console.log('İSKİ Canlı API\'ye bağlanılıyor...');
         const response = await apiIstemci.get('https://iski.gov.tr/web/api/v1/kesintiler');
         if (response.data && Array.isArray(response.data) && response.data.length > 0) {
             return response.data.map(k => {
                 const aciklamaText = k.aciklama || 'Arıza onarım çalışması.';
-                // Açıklamada planlı/bakım geçiyorsa kategoriyi planlı yapıyoruz
                 const isPlanli = aciklamaText.includes('bakım') || aciklamaText.includes('planlı') || aciklamaText.includes('temizlik');
                 return {
                     tur: 'su',
@@ -83,12 +45,16 @@ async function IskiKesintileriGetir() {
             });
         }
         return [];
-    } catch (error) { return []; }
+    } catch (error) { 
+        console.error('İSKİ Canlı Veri Çekilemedi:', error.message);
+        return []; 
+    }
 }
 
-// 2. BEDAŞ API (Avrupa Yakası Elektrik)
+// 2. BEDAŞ GERÇEK API
 async function BedasKesintileriGetir() {
     try {
+        console.log('BEDAŞ Canlı API\'ye bağlanılıyor...');
         const response = await apiIstemci.get('https://api.bedas.com.tr/v1/kesintiler/guncel');
         if (response.data && Array.isArray(response.data) && response.data.length > 0) {
             return response.data.map(k => ({
@@ -101,13 +67,16 @@ async function BedasKesintileriGetir() {
             }));
         }
         return [];
-    } catch (error) { return []; }
+    } catch (error) { 
+        console.error('BEDAŞ Canlı Veri Çekilemedi:', error.message);
+        return []; 
+    }
 }
 
-// 3. AYEDAŞ API (Anadolu Yakası Elektrik)
+// 3. AYEDAŞ GERÇEK API
 async function AyedasKesintileriGetir() {
     try {
-        // AYEDAŞ resmi kesinti API endpoint'i
+        console.log('AYEDAŞ Canlı API\'ye bağlanılıyor...');
         const response = await apiIstemci.get('https://api.ayedas.com.tr/v1/kesintiler/istanbul');
         if (response.data && Array.isArray(response.data) && response.data.length > 0) {
             return response.data.map(k => ({
@@ -120,11 +89,14 @@ async function AyedasKesintileriGetir() {
             }));
         }
         return [];
-    } catch (error) { return []; }
+    } catch (error) { 
+        console.error('AYEDAŞ Canlı Veri Çekilemedi:', error.message);
+        return []; 
+    }
 }
 
 app.get('/api/kesintiler', async (req, res) => {
-    console.log(`[${suAnkiTarihiGetir()}] Gelişmiş veri talebi geldi...`);
+    console.log(`[${suAnkiTarihiGetir()}] Tamamen gerçek veri talebi işleniyor...`);
     
     const [su, bedas, ayedas] = await Promise.all([
         IskiKesintileriGetir(),
@@ -132,16 +104,12 @@ app.get('/api/kesintiler', async (req, res) => {
         AyedasKesintileriGetir()
     ]);
 
-    let tumKesintiler = [...su, ...bedas, ...ayedas];
+    const tumKesintiler = [...su, ...bedas, ...ayedas];
     
-    if (tumKesintiler.length === 0) {
-        console.log('Resmi API kapıları kapalı, gelişmiş simüle veriler basılıyor.');
-        tumKesintiler = testKesintileri;
-    }
-    
+    console.log(`Toplam ${tumKesintiler.length} GERÇEK kesinti verisi istemciye gönderiliyor.`);
     res.json(tumKesintiler);
 });
 
 app.listen(PORT, () => {
-    console.log(`[BAŞARILI] Sunucu ayakta!`);
+    console.log(`[BAŞARILI] Gerçek Veri Akış Sunucusu Aktif!`);
 });
