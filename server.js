@@ -5,15 +5,16 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 10000;
 
+// CORS ayarı en üstte olmalı
 app.use(cors());
 
-// Resmi kurumların bizi bot sanıp engellememesi için tarayıcı taklidi yapıyoruz
+// Resmi kurumların yabancı sunucuları engellememesi için gelişmiş tarayıcı başlıkları
 const apiIstemci = axios.create({
-    timeout: 7000, // Kurum siteleri yavaş açılırsa diye süreyi 7 saniyeye çıkardık
+    timeout: 6000,
     headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept': 'application/json, text/plain, */*',
-        'Accept-Language': 'tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7'
+        'Accept-Language': 'tr-TR,tr;q=0.9,en-US;q=0.8'
     }
 });
 
@@ -25,12 +26,11 @@ function suAnkiTarihiGetir() {
     return `${gun}.${ay}.${yil}`;
 }
 
-// 1. İSKİ GERÇEK API
+// 1. İSKİ Canlı API İsteği
 async function IskiKesintileriGetir() {
     try {
-        console.log('İSKİ Canlı API\'ye bağlanılıyor...');
         const response = await apiIstemci.get('https://iski.gov.tr/web/api/v1/kesintiler');
-        if (response.data && Array.isArray(response.data) && response.data.length > 0) {
+        if (response.data && Array.isArray(response.data)) {
             return response.data.map(k => {
                 const aciklamaText = k.aciklama || 'Arıza onarım çalışması.';
                 const isPlanli = aciklamaText.includes('bakım') || aciklamaText.includes('planlı') || aciklamaText.includes('temizlik');
@@ -46,17 +46,16 @@ async function IskiKesintileriGetir() {
         }
         return [];
     } catch (error) { 
-        console.error('İSKİ Canlı Veri Çekilemedi:', error.message);
+        console.error('İSKİ API Bağlantı Sorunu:', error.message);
         return []; 
     }
 }
 
-// 2. BEDAŞ GERÇEK API
+// 2. BEDAŞ Canlı API İsteği (Avrupa Yakası)
 async function BedasKesintileriGetir() {
     try {
-        console.log('BEDAŞ Canlı API\'ye bağlanılıyor...');
         const response = await apiIstemci.get('https://api.bedas.com.tr/v1/kesintiler/guncel');
-        if (response.data && Array.isArray(response.data) && response.data.length > 0) {
+        if (response.data && Array.isArray(response.data)) {
             return response.data.map(k => ({
                 tur: 'elektrik',
                 kategori: k.tip === 'Planlı' || k.neden?.includes('Bakım') ? 'planli' : 'ariza',
@@ -68,35 +67,35 @@ async function BedasKesintileriGetir() {
         }
         return [];
     } catch (error) { 
-        console.error('BEDAŞ Canlı Veri Çekilemedi:', error.message);
+        console.error('BEDAŞ API Bağlantı Sorunu:', error.message);
         return []; 
     }
 }
 
-// 3. AYEDAŞ GERÇEK API
+// 3. AYEDAŞ Canlı API İsteği (Anadolu Yakası)
 async function AyedasKesintileriGetir() {
     try {
-        console.log('AYEDAŞ Canlı API\'ye bağlanılıyor...');
         const response = await apiIstemci.get('https://api.ayedas.com.tr/v1/kesintiler/istanbul');
-        if (response.data && Array.isArray(response.data) && response.data.length > 0) {
+        if (response.data && Array.isArray(response.data)) {
             return response.data.map(k => ({
                 tur: 'elektrik',
                 kategori: k.kesintiTipi === 'Planlı Bakım' ? 'planli' : 'ariza',
                 ilce: k.ilceAdi || 'Bilinmiyor',
                 mahalle: k.mahalleAdi || 'Tüm Mahalleler',
                 tarih: k.tarihAraligi || suAnkiTarihiGetir(),
-                aciklama: 'AYEDAŞ: ' + (k.aciklama || 'Şebeke iyileştirme çalışması.')
+                aciklama: 'AYEDAŞ: ' + (k.aciklama || 'Şebeke iyileştirme/bakım çalışması.')
             }));
         }
         return [];
     } catch (error) { 
-        console.error('AYEDAŞ Canlı Veri Çekilemedi:', error.message);
+        console.error('AYEDAŞ API Bağlantı Sorunu:', error.message);
         return []; 
     }
 }
 
+// Ana API rotası
 app.get('/api/kesintiler', async (req, res) => {
-    console.log(`[${suAnkiTarihiGetir()}] Tamamen gerçek veri talebi işleniyor...`);
+    console.log(`[${suAnkiTarihiGetir()}] Yeni canlı veri talebi işleniyor...`);
     
     const [su, bedas, ayedas] = await Promise.all([
         IskiKesintileriGetir(),
@@ -105,11 +104,11 @@ app.get('/api/kesintiler', async (req, res) => {
     ]);
 
     const tumKesintiler = [...su, ...bedas, ...ayedas];
+    console.log(`Toplam ${tumKesintiler.length} resmi kesinti verisi gönderiliyor.`);
     
-    console.log(`Toplam ${tumKesintiler.length} GERÇEK kesinti verisi istemciye gönderiliyor.`);
     res.json(tumKesintiler);
 });
 
 app.listen(PORT, () => {
-    console.log(`[BAŞARILI] Gerçek Veri Akış Sunucusu Aktif!`);
+    console.log(`[BAŞARILI] Gerçek Veri Sunucusu Aktif!`);
 });
