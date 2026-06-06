@@ -4,7 +4,6 @@ let harita;
 let markerGrup;
 let aktifFiltre = 'tumu';
 
-// Gelişmiş İstanbul Merkez Koordinatları (Haritanın pini doğru ilçeye fırlatması için)
 const ilceKoordinatlari = {
     'BEYKOZ': [41.1321, 29.1054], 'USKUDAR': [41.0264, 29.0152], 'ÜSKÜDAR': [41.0264, 29.0152],
     'KADIKOY': [40.9912, 29.0274], 'KADIKÖY': [40.9912, 29.0274], 'UMRANIYE': [41.0253, 29.1232],
@@ -34,24 +33,10 @@ async function verileriGetir() {
     try {
         const response = await fetch(API_URL);
         tumKesintiler = await response.json();
-        
-        // KRİTİK AYAR: Eğer API bomboş döndüyse veya Kadıköy'ü getiremediyse, senin bahsettiğin gerçek Kadıköy bakımını zorla ekle!
-        const kadikoyVarMi = tumKesintiler.some(k => k.ilce.toUpperCase().includes('KADIKÖY') || k.ilce.toUpperCase().includes('KADIKOY'));
-        if (!kadikoyVarMi) {
-            const bugun = new Date().toLocaleDateString('tr-TR');
-            tumKesintiler.push({
-                tur: 'elektrik',
-                kategori: 'planli',
-                ilce: 'Kadıköy',
-                mahalle: 'Moda, Caferağa ve Osmanağa Mahalleleri',
-                tarih: bugun + ' 09:00 - 17:00',
-                aciklama: 'AYEDAŞ: Planlı Şebeke İyileştirme ve Bakım Çalışması.'
-            });
-        }
-
         ekraniGuncelle();
     } catch (error) {
-        console.error("Hata:", error);
+        console.error("Veri çekme hatası:", error);
+        document.getElementById('kesinti-listesi').innerHTML = '<div class="loading" style="color:#ef4444;">Sunucu bağlantı hatası!</div>';
     }
 }
 
@@ -89,7 +74,7 @@ function verileriYansit(liste) {
     listeAlani.innerHTML = '';
 
     if (liste.length === 0) {
-        listeAlani.innerHTML = '<div class="loading">Seçili kategoride kesinti bulunamadı.</div>';
+        listeAlani.innerHTML = '<div class="loading">Şu an resmi bir kesinti kaydı bulunamadı.</div>';
         return;
     }
 
@@ -104,7 +89,7 @@ function verileriYansit(liste) {
             <div class="${kartSinifi}" style="animation-delay: ${delay}s">
                 <div class="card-header">
                     <span class="card-title">${k.ilce}</span>
-                    <span class="badge"><i class="fa-solid ${icon}"></i> ${k.kategori === 'planli' ? 'PLANLI BAKIM' : k.tur.toUpperCase()}</span>
+                    <span class="badge"><i class="fa-solid ${icon}"></i> ${k.kategori === 'planli' ? 'PLANLI' : k.tur.toUpperCase()}</span>
                 </div>
                 <div class="card-body">
                     <p><strong>Bölge:</strong> ${k.mahalle}</p>
@@ -117,20 +102,17 @@ function verileriYansit(liste) {
     });
 }
 
-// NOKTA ATIŞI GÜNCELLEME: Akıllı Arama Motorlu Harita İşaretleyicisi
 function haritayaMarkerEkle(liste) {
     markerGrup.clearLayers();
 
     liste.forEach(k => {
         const gelenIlceText = k.ilce.toUpperCase().trim();
         let bulunanKoordinat = null;
-        let eslesenIlceAnahtari = "";
 
-        // Gelen ilçe metninin içinde bizim sözlükteki kelimeler geçiyor mu diye tarıyoruz (Örn: "KADIKÖY İLÇESİ" içinden "KADIKÖY"ü cımbızlar)
+        // Akıllı ilçe metni arayıcı
         for (const anahtar in ilceKoordinatlari) {
             if (gelenIlceText.includes(anahtar)) {
                 bulunanKoordinat = ilceKoordinatlari[anahtar];
-                eslesenIlceAnahtari = anahtar;
                 break;
             }
         }
@@ -156,7 +138,7 @@ function haritayaMarkerEkle(liste) {
             const popupIcerik = `
                 <div style="color: #0f172a; font-family: 'Poppins', sans-serif; min-width: 180px;">
                     <h3 style="margin:0 0 6px 0; font-size:13px; border-bottom:1px solid #ddd; padding-bottom:3px; color:${renk === '#a855f7' ? '#7c3aed' : renk};">
-                        ${emoji} ${k.ilce} (${k.kategori === 'planli' ? 'Planlı Bakım' : k.tur.toUpperCase()})
+                        ${emoji} ${k.ilce}
                     </h3>
                     <p style="margin:0 0 4px 0; font-size:11px;"><strong>Konum:</strong> ${k.mahalle}</p>
                     <p style="margin:0; font-size:10px; color:#475569;"><strong>Zaman:</strong> ${k.tarih}</p>
