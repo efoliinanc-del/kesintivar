@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KesintiVar | İstanbul Anlık Kesinti Haritası</title>
+    <title>KesintiVar | Efe Studios Gelişmiş Takip Sistemi</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -14,37 +14,45 @@
     <header>
         <div class="header-container">
             <div class="logo">
-                <i class="fa-solid fa-triangle-exclamation animate-pulse"></i>
+                <i class="fa-solid fa-bolt-lightning neon-icon"></i>
                 <h1>Kesinti<span>Var</span></h1>
             </div>
-            <p class="subtitle">İstanbul Anlık Elektrik & Su Kesintisi Takip Sistemi</p>
+            <p class="subtitle">BEDAŞ, AYEDAŞ ve İSKİ Anlık Canlı Takip Radarı</p>
+            
+            <div class="filter-container">
+                <button class="filter-btn active" data-filter="tumu"><i class="fa-solid fa-globe"></i> Tümü</button>
+                <button class="filter-btn" data-filter="elektrik"><i class="fa-solid fa-bolt"></i> Elektrik</button>
+                <button class="filter-btn" data-filter="su"><i class="fa-solid fa-droplet"></i> Su</button>
+                <button class="filter-btn" data-filter="planli"><i class="fa-solid fa-calendar-days"></i> Planlanmış</button>
+            </div>
         </div>
     </header>
 
     <main class="container">
-        <section class="map-section">
+        <section class="map-section animate-fade">
             <div class="section-title">
                 <i class="fa-solid fa-map-location-dot"></i>
-                <h2>Canlı Kesinti Haritası</h2>
+                <h2>Canlı Neon Kesinti Haritası</h2>
             </div>
             <div id="map"></div>
         </section>
 
-        <section class="list-section">
+        <section class="list-section animate-fade">
             <div class="section-title">
                 <i class="fa-solid fa-list-ul"></i>
-                <h2>Kesinti Detayları</h2>
+                <h2>Kesinti Raporları</h2>
             </div>
             <div id="kesinti-listesi">
                 <div class="loading">
-                    <i class="fa-solid fa-circle-notch fa-spin"></i> Veriler yükleniyor ve haritaya işleniyor...
+                    <i class="fa-solid fa-spinner fa-spin"></i> Veriler çekirdekten yükleniyor...
                 </div>
             </div>
         </section>
     </main>
 
-    <footer>
-        <p>&copy; 2026 Efe Studios. Tüm Hakları Saklıdır.</p>
+    <footer class="immortal-footer">
+        <p>⚡ Powered by <span class="efe-brand">EFE STUDIOS</span> &copy; 2026 ⚡</p>
+        <p class="eternal-text">Bu proje sonsuza dek internet ağında aktif kalacak şekilde mühürlenmiştir.</p>
     </footer>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
