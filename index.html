@@ -19,7 +19,8 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            overflow: hidden;
+            overflow-x: hidden;
+            padding: 20px;
         }
 
         /* Arka plandaki siber atmosferik neon efektler */
@@ -28,11 +29,12 @@
             position: absolute;
             width: 300px;
             height: 300px;
-            background: rgba(239, 68, 68, 0.15);
+            background: rgba(239, 68, 68, 0.12);
             border-radius: 50%;
             filter: blur(100px);
-            top: 20%;
-            left: 20%;
+            top: 10%;
+            left: 10%;
+            z-index: 1;
         }
 
         body::after {
@@ -40,25 +42,27 @@
             position: absolute;
             width: 300px;
             height: 300px;
-            background: rgba(59, 130, 246, 0.1);
+            background: rgba(59, 130, 246, 0.08);
             border-radius: 50%;
             filter: blur(100px);
-            bottom: 20%;
-            right: 20%;
+            bottom: 10%;
+            right: 10%;
+            z-index: 1;
         }
 
         .container {
             text-align: center;
             z-index: 10;
-            padding: 20px;
+            width: 100%;
+            max-width: 600px;
         }
 
         .logo {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 800;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             color: #4b5563;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
             text-transform: uppercase;
         }
 
@@ -66,65 +70,104 @@
             color: #ef4444;
         }
 
-        /* Geri Sayım Sayacı Tasarımı */
+        /* Mobil Uyumlu Geri Sayım Sayacı Alanı */
         .countdown-wrapper {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin-bottom: 40px;
+            gap: 12px;
+            margin-bottom: 50px;
+            flex-wrap: nowrap; /* Mobilde alt alta kırılmasın, yan yana küçülsün */
         }
 
         .time-box {
-            background: rgba(15, 19, 34, 0.8);
+            background: rgba(15, 19, 34, 0.85);
             border: 1px solid rgba(255, 255, 255, 0.03);
             border-radius: 12px;
-            padding: 20px;
-            min-width: 100px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(5px);
+            padding: 24px 10px;
+            flex: 1; /* Her kutu eşit genişlikte dağılsın */
+            max-width: 110px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
         }
 
         .time-num {
-            font-size: 48px;
+            font-size: 42px;
             font-weight: 700;
             font-family: 'Courier New', Courier, monospace;
             color: #f3f4f6;
-            text-shadow: 0 0 10px rgba(243, 244, 246, 0.2);
+            text-shadow: 0 0 10px rgba(243, 244, 246, 0.15);
         }
 
         .time-label {
-            font-size: 12px;
+            font-size: 11px;
             color: #9ca3af;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-top: 5px;
+            margin-top: 8px;
         }
 
-        /* Durum ve Açıklama Metni */
+        /* Durum Bildirimi ve Siber Yazılar */
         .status-message {
             font-size: 18px;
             font-weight: 500;
             letter-spacing: 0.5px;
+            line-height: 1.5;
+            padding: 0 15px;
             transition: all 0.5s ease;
         }
 
         .status-active {
             color: #f59e0b;
-            text-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
+            text-shadow: 0 0 8px rgba(245, 158, 11, 0.25);
         }
 
         .status-ended {
             color: #ef4444;
-            text-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
+            text-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
             font-size: 20px;
             font-weight: 700;
         }
 
         .footer-brand {
-            margin-top: 60px;
-            font-size: 12px;
+            margin-top: 70px;
+            font-size: 11px;
             color: #374151;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
+        }
+
+        /* TELEFONLAR İÇİN ÖZEL CSS AYARLARI (RESPONSIVE) */
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 22px;
+                margin-bottom: 40px;
+            }
+
+            .countdown-wrapper {
+                gap: 8px; /* Mobilde kutuların arasındaki boşluğu azaltıyoruz */
+            }
+
+            .time-box {
+                padding: 15px 5px; /* Mobilde kutu iç boşluklarını daraltıyoruz */
+                border-radius: 8px;
+            }
+
+            .time-num {
+                font-size: 28px; /* Telefonlarda fontu küçültüyoruz ki taşma yapmasın */
+            }
+
+            .time-label {
+                font-size: 9px;
+                letter-spacing: 0.5px;
+                margin-top: 4px;
+            }
+
+            .status-message {
+                font-size: 15px; /* Mobilde alt uyarı yazısı ekrana tam otursun */
+            }
+            
+            .status-ended {
+                font-size: 17px;
+            }
         }
     </style>
 </head>
@@ -173,23 +216,21 @@
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            // Değerleri ekrana jilet gibi basıyoruz (Sıfır ekleyerek çift haneli yapıyoruz)
+            // Çift haneli gösterim ayarı
             document.getElementById("days").innerText = days < 10 ? "0" + days : days;
             document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
             document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
             document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
 
-            // Süre bittiğinde tetiklenecek siber mekanizma
+            // Süre bittiğinde çalışacak mekanizma
             if (distance < 0) {
                 clearInterval(countdownTimer);
                 
-                // Zamanlayıcıyı 00.00.00 yapıyoruz
                 document.getElementById("days").innerText = "00";
                 document.getElementById("hours").innerText = "00";
                 document.getElementById("minutes").innerText = "00";
                 document.getElementById("seconds").innerText = "00";
 
-                // Yazıyı güncelleyip kırmızı alarm moduna alıyoruz
                 const statusBox = document.getElementById("status-box");
                 statusBox.innerText = "Büyük Sunucu Maliyeti Yüzünden Kapatıldı.";
                 statusBox.className = "status-message status-ended";
