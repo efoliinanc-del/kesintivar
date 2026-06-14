@@ -3,59 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KesintiVar | Efe Studios Gelişmiş Takip Sistemi</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="style.css">
+    <title>Kesinti Var | Efe Studios</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #070913;
+            color: #f9fafb;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Arka plandaki siber atmosferik neon efektler */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(239, 68, 68, 0.15);
+            border-radius: 50%;
+            filter: blur(100px);
+            top: 20%;
+            left: 20%;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 50%;
+            filter: blur(100px);
+            bottom: 20%;
+            right: 20%;
+        }
+
+        .container {
+            text-align: center;
+            z-index: 10;
+            padding: 20px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #4b5563;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+        }
+
+        .logo span {
+            color: #ef4444;
+        }
+
+        /* Geri Sayım Sayacı Tasarımı */
+        .countdown-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .time-box {
+            background: rgba(15, 19, 34, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 20px;
+            min-width: 100px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
+        }
+
+        .time-num {
+            font-size: 48px;
+            font-weight: 700;
+            font-family: 'Courier New', Courier, monospace;
+            color: #f3f4f6;
+            text-shadow: 0 0 10px rgba(243, 244, 246, 0.2);
+        }
+
+        .time-label {
+            font-size: 12px;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        /* Durum ve Açıklama Metni */
+        .status-message {
+            font-size: 18px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: all 0.5s ease;
+        }
+
+        .status-active {
+            color: #f59e0b;
+            text-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
+        }
+
+        .status-ended {
+            color: #ef4444;
+            text-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .footer-brand {
+            margin-top: 60px;
+            font-size: 12px;
+            color: #374151;
+            letter-spacing: 1px;
+        }
+    </style>
 </head>
 <body>
 
-    <header>
-        <div class="header-container">
-            <div class="logo">
-                <i class="fa-solid fa-bolt-lightning neon-icon"></i>
-                <h1>Kesinti<span>Var</span></h1>
+    <div class="container">
+        <div class="logo">KESİNTİ<span>VAR</span></div>
+
+        <div class="countdown-wrapper">
+            <div class="time-box">
+                <div id="days" class="time-num">00</div>
+                <div class="time-label">Gün</div>
             </div>
-            <p class="subtitle">BEDAŞ, AYEDAŞ ve İSKİ Anlık Canlı Takip Radarı</p>
-            
-            <div class="filter-container">
-                <button class="filter-btn active" data-filter="tumu"><i class="fa-solid fa-globe"></i> Tümü</button>
-                <button class="filter-btn" data-filter="elektrik"><i class="fa-solid fa-bolt"></i> Elektrik</button>
-                <button class="filter-btn" data-filter="su"><i class="fa-solid fa-droplet"></i> Su</button>
-                <button class="filter-btn" data-filter="planli"><i class="fa-solid fa-calendar-days"></i> Planlanmış</button>
+            <div class="time-box">
+                <div id="hours" class="time-num">00</div>
+                <div class="time-label">Saat</div>
+            </div>
+            <div class="time-box">
+                <div id="minutes" class="time-num">00</div>
+                <div class="time-label">Dakika</div>
+            </div>
+            <div class="time-box">
+                <div id="seconds" class="time-num">00</div>
+                <div class="time-label">Saniye</div>
             </div>
         </div>
-    </header>
 
-    <main class="container">
-        <section class="map-section animate-fade">
-            <div class="section-title">
-                <i class="fa-solid fa-map-location-dot"></i>
-                <h2>Canlı Neon Kesinti Haritası</h2>
-            </div>
-            <div id="map"></div>
-        </section>
+        <div id="status-box" class="status-message status-active">
+            Büyük Sunucu Maliyetleri Yüzünden Kapatılıyor.
+        </div>
 
-        <section class="list-section animate-fade">
-            <div class="section-title">
-                <i class="fa-solid fa-list-ul"></i>
-                <h2>Kesinti Raporları</h2>
-            </div>
-            <div id="kesinti-listesi">
-                <div class="loading">
-                    <i class="fa-solid fa-spinner fa-spin"></i> Veriler çekirdekten yükleniyor...
-                </div>
-            </div>
-        </section>
-    </main>
+        <div class="footer-brand">© 2026 Efe Studios</div>
+    </div>
 
-    <footer class="immortal-footer">
-        <p>⚡ Powered by <span class="efe-brand">EFE STUDIOS</span> &copy; 2026 ⚡</p>
-        <p class="eternal-text">Bu proje sonsuza dek internet ağında aktif kalacak şekilde mühürlenmiştir.</p>
-    </footer>
+    <script>
+        // Hedef Tarih: 1 Temmuz 2026 00:00:00
+        const targetDate = new Date("July 1, 2026 00:00:00").getTime();
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="script.js"></script>
+        const countdownTimer = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            // Zaman hesaplamaları
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Değerleri ekrana jilet gibi basıyoruz (Sıfır ekleyerek çift haneli yapıyoruz)
+            document.getElementById("days").innerText = days < 10 ? "0" + days : days;
+            document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
+            document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
+            document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
+
+            // Süre bittiğinde tetiklenecek siber mekanizma
+            if (distance < 0) {
+                clearInterval(countdownTimer);
+                
+                // Zamanlayıcıyı 00.00.00 yapıyoruz
+                document.getElementById("days").innerText = "00";
+                document.getElementById("hours").innerText = "00";
+                document.getElementById("minutes").innerText = "00";
+                document.getElementById("seconds").innerText = "00";
+
+                // Yazıyı güncelleyip kırmızı alarm moduna alıyoruz
+                const statusBox = document.getElementById("status-box");
+                statusBox.innerText = "Büyük Sunucu Maliyeti Yüzünden Kapatıldı.";
+                statusBox.className = "status-message status-ended";
+            }
+        }, 1000);
+    </script>
+
 </body>
 </html>
