@@ -2,241 +2,98 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kesinti Var | Efe Studios</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kesinti Var! | Sistem Durumu</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            background-color: #070913;
-            color: #f9fafb;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #000000;
+            color: #ff3d00;
+            font-family: 'Courier New', Courier, monospace;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            overflow-x: hidden;
-            padding: 20px;
-        }
-
-        /* Arka plandaki siber atmosferik neon efektler */
-        body::before {
-            content: '';
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            background: rgba(239, 68, 68, 0.12);
-            border-radius: 50%;
-            filter: blur(100px);
-            top: 10%;
-            left: 10%;
-            z-index: 1;
-        }
-
-        body::after {
-            content: '';
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            background: rgba(59, 130, 246, 0.08);
-            border-radius: 50%;
-            filter: blur(100px);
-            bottom: 10%;
-            right: 10%;
-            z-index: 1;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
         }
 
         .container {
             text-align: center;
-            z-index: 10;
-            width: 100%;
-            max-width: 600px;
+            padding: 20px;
         }
 
-        .logo {
-            font-size: 26px;
-            font-weight: 800;
-            letter-spacing: 3px;
-            color: #4b5563;
-            margin-bottom: 50px;
-            text-transform: uppercase;
+        /* Çıldıran Sayaç */
+        .glitch-timer {
+            font-size: 4.5rem;
+            font-weight: bold;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px rgba(255, 61, 0, 0.6);
+            margin-bottom: 20px;
+            user-select: none;
         }
 
-        .logo span {
-            color: #ef4444;
-        }
-
-        /* Mobil Uyumlu Geri Sayım Sayacı Alanı */
-        .countdown-wrapper {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 50px;
-            flex-wrap: nowrap; /* Mobilde alt alta kırılmasın, yan yana küçülsün */
-        }
-
-        .time-box {
-            background: rgba(15, 19, 34, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
-            padding: 24px 10px;
-            flex: 1; /* Her kutu eşit genişlikte dağılsın */
-            max-width: 110px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-        }
-
-        .time-num {
-            font-size: 42px;
-            font-weight: 700;
-            font-family: 'Courier New', Courier, monospace;
-            color: #f3f4f6;
-            text-shadow: 0 0 10px rgba(243, 244, 246, 0.15);
-        }
-
-        .time-label {
-            font-size: 11px;
-            color: #9ca3af;
-            text-transform: uppercase;
+        .status-text {
+            font-size: 1.1rem;
+            color: #555555;
             letter-spacing: 1px;
-            margin-top: 8px;
+            text-transform: uppercase;
         }
 
-        /* Durum Bildirimi ve Siber Yazılar */
-        .status-message {
-            font-size: 18px;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-            line-height: 1.5;
-            padding: 0 15px;
-            transition: all 0.5s ease;
-        }
-
-        .status-active {
-            color: #f59e0b;
-            text-shadow: 0 0 8px rgba(245, 158, 11, 0.25);
-        }
-
-        .status-ended {
-            color: #ef4444;
-            text-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
-            font-size: 20px;
-            font-weight: 700;
-        }
-
-        .footer-brand {
-            margin-top: 70px;
-            font-size: 11px;
-            color: #374151;
-            letter-spacing: 1.5px;
-        }
-
-        /* TELEFONLAR İÇİN ÖZEL CSS AYARLARI (RESPONSIVE) */
-        @media (max-width: 480px) {
-            .logo {
-                font-size: 22px;
-                margin-bottom: 40px;
-            }
-
-            .countdown-wrapper {
-                gap: 8px; /* Mobilde kutuların arasındaki boşluğu azaltıyoruz */
-            }
-
-            .time-box {
-                padding: 15px 5px; /* Mobilde kutu iç boşluklarını daraltıyoruz */
-                border-radius: 8px;
-            }
-
-            .time-num {
-                font-size: 28px; /* Telefonlarda fontu küçültüyoruz ki taşma yapmasın */
-            }
-
-            .time-label {
-                font-size: 9px;
-                letter-spacing: 0.5px;
-                margin-top: 4px;
-            }
-
-            .status-message {
-                font-size: 15px; /* Mobilde alt uyarı yazısı ekrana tam otursun */
-            }
-            
-            .status-ended {
-                font-size: 17px;
-            }
+        /* Arka planda siber hata havası katacak ufak bir efekt */
+        .matrix-noise {
+            position: absolute;
+            font-size: 0.7rem;
+            color: rgba(255, 61, 0, 0.03);
+            white-space: nowrap;
+            user-select: none;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="logo">KESİNTİ<span>VAR</span></div>
-
-        <div class="countdown-wrapper">
-            <div class="time-box">
-                <div id="days" class="time-num">00</div>
-                <div class="time-label">Gün</div>
-            </div>
-            <div class="time-box">
-                <div id="hours" class="time-num">00</div>
-                <div class="time-label">Saat</div>
-            </div>
-            <div class="time-box">
-                <div id="minutes" class="time-num">00</div>
-                <div class="time-label">Dakika</div>
-            </div>
-            <div class="time-box">
-                <div id="seconds" class="time-num">00</div>
-                <div class="time-label">Saniye</div>
-            </div>
-        </div>
-
-        <div id="status-box" class="status-message status-active">
-            Büyük Sunucu Maliyetleri Yüzünden Kapatılıyor.
-        </div>
-
-        <div class="footer-brand">© 2026 Efe Studios</div>
+        <div class="glitch-timer" id="crazyTimer">00:00:00</div>
+        <div class="status-text" id="statusMessage">Büyük Sunucu Maliyetleri Yüzünden Kapatılıyor...</div>
     </div>
 
     <script>
-        // Hedef Tarih: 1 Temmuz 2026 00:00:00
-        const targetDate = new Date("July 1, 2026 00:00:00").getTime();
+        document.addEventListener("DOMContentLoaded", () => {
+            delirenSayac();
+            arkaPlanGürültüsü();
+        });
 
-        const countdownTimer = setInterval(function() {
-            const now = new Date().getTime();
-            const distance = targetDate - now;
+        function delirenSayac() {
+            const timerElement = document.getElementById('crazyTimer');
+            const messageElement = document.getElementById('statusMessage');
+            
+            // Alt metinleri de arada bir bozmak için varyasyonlar
+            const mesajlar = [
+                "Büyük Sunucu Maliyetleri Yüzünden Kapatılıyor...",
+                "SİSTEM_HATASI: BAĞLANTI_KESİLDİ",
+                "VERİ_TABANI_ÇÖKTÜ_BAĞLANTI_ARANIYOR",
+                "KAPATILIYOR...",
+                "ERROR_408_TIMEOUT_GLITCH"
+            ];
 
-            // Zaman hesaplamaları
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            // Çift haneli gösterim ayarı
-            document.getElementById("days").innerText = days < 10 ? "0" + days : days;
-            document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
-            document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
-            document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
-
-            // Süre bittiğinde çalışacak mekanizma
-            if (distance < 0) {
-                clearInterval(countdownTimer);
+            setInterval(() => {
+                // 🎲 Tamamen rastgele saat, dakika ve saniye üretiliyor
+                let rSaat = String(Math.floor(Math.between ?? Math.random() * 99)).padStart(2, '0');
+                let rDakika = String(Math.floor(Math.random() * 60)).padStart(2, '0');
+                let rSaniye = String(Math.floor(Math.random() * 60)).padStart(2, '0');
                 
-                document.getElementById("days").innerText = "00";
-                document.getElementById("hours").innerText = "00";
-                document.getElementById("minutes").innerText = "00";
-                document.getElementById("seconds").innerText = "00";
+                // Arada sırada hile yapıp milisaniye benzeri 3 haneli sayılar fırlatsın
+                if(Math.random() > 0.85) {
+                    rSaat = String(Math.floor(Math.random() * 999)).padStart(3, '0');
+                }
 
-                const statusBox = document.getElementById("status-box");
-                statusBox.innerText = "Büyük Sunucu Maliyeti Yüzünden Kapatıldı.";
-                statusBox.className = "status-message status-ended";
-            }
-        }, 1000);
-    </script>
+                // Sayacı ekrana bas
+                timerElement.textContent = `${rSaat}:${rDakika}:${rSaniye}`;
 
-</body>
-</html>
+                // Arada bir aşağıdaki yazıyı da rastgele boz ki iyice çöktü sansınlar
+                if(Math.random() > 0.90) {
+                    const rastgeleMesaj = mesajlar[Math.floor(Math.random() * mesajlar.length)];
+                    messageElement.textContent = rastgeleMesaj;
+                }
+            }, 150); // 150 milisaniy
