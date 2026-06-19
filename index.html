@@ -38,6 +38,7 @@
             color: #555555;
             letter-spacing: 1px;
             text-transform: uppercase;
+            min-height: 24px;
         }
 
         /* Arka planda siber hata havası katacak ufak bir efekt */
@@ -68,7 +69,6 @@
             const timerElement = document.getElementById('crazyTimer');
             const messageElement = document.getElementById('statusMessage');
             
-            // Alt metinleri de arada bir bozmak için varyasyonlar
             const mesajlar = [
                 "Büyük Sunucu Maliyetleri Yüzünden Kapatılıyor...",
                 "SİSTEM_HATASI: BAĞLANTI_KESİLDİ",
@@ -78,12 +78,12 @@
             ];
 
             setInterval(() => {
-                // 🎲 Tamamen rastgele saat, dakika ve saniye üretiliyor
-                let rSaat = String(Math.floor(Math.between ?? Math.random() * 99)).padStart(2, '0');
+                // BUG FIXED: Math.between hatası kaldırıldı, artık sayılar deli gibi akacak
+                let rSaat = String(Math.floor(Math.random() * 99)).padStart(2, '0');
                 let rDakika = String(Math.floor(Math.random() * 60)).padStart(2, '0');
                 let rSaniye = String(Math.floor(Math.random() * 60)).padStart(2, '0');
                 
-                // Arada sırada hile yapıp milisaniye benzeri 3 haneli sayılar fırlatsın
+                // Arada sırada hile yapıp 3 haneli sayılar fırlatsın (Görseli bozmak için)
                 if(Math.random() > 0.85) {
                     rSaat = String(Math.floor(Math.random() * 999)).padStart(3, '0');
                 }
@@ -91,9 +91,24 @@
                 // Sayacı ekrana bas
                 timerElement.textContent = `${rSaat}:${rDakika}:${rSaniye}`;
 
-                // Arada bir aşağıdaki yazıyı da rastgele boz ki iyice çöktü sansınlar
-                if(Math.random() > 0.90) {
+                // Arada bir aşağıdaki yazıyı da rastgele boz
+                if(Math.random() > 0.92) {
                     const rastgeleMesaj = mesajlar[Math.floor(Math.random() * mesajlar.length)];
                     messageElement.textContent = rastgeleMesaj;
                 }
-            }, 150); // 150 milisaniy
+            }, 100); // 100 milisaniye: Aşırı hızlı akış!
+        }
+
+        function arkaPlanGürültüsü() {
+            for(let i = 0; i < 20; i++) {
+                let div = document.createElement('div');
+                div.className = 'matrix-noise';
+                div.style.left = Math.random() * 100 + 'vw';
+                div.style.top = Math.random() * 100 + 'vh';
+                div.textContent = "ERR_ERR_DATA_FLOW_FAIL_" + Math.floor(Math.random() * 999);
+                document.body.appendChild(div);
+            }
+        }
+    </script>
+</body>
+</html>
