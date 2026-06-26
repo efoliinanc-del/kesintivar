@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kesinti Var! | Canlı Takip Merkezi</title>
-    
+    <title>Kesinti Var!</title>
     <style>
         /* 🎨 Premium Deep Black Teması */
         * {
@@ -15,174 +14,64 @@
         }
 
         body {
-            background-color: #000000; 
-            color: #e0e0e0;
-            padding: 20px 10px;
+            background-color: #000000;
+            color: #ffffff;
             display: flex;
             flex-direction: column;
+            justify-content: center;
             align-items: center;
             min-height: 100vh;
+            padding: 20px;
         }
 
-        .main-wrapper {
-            width: 100%;
-            max-width: 650px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            flex-grow: 1;
-        }
-
-        .header-panel {
+        .container {
             text-align: center;
-            padding: 25px 20px;
+            max-width: 550px;
+            width: 100%;
+            padding: 40px 20px;
             background: #0a0a0a;
-            border-radius: 16px;
             border: 1px solid #1a1a1a;
+            border-radius: 16px;
             box-shadow: 0 4px 25px rgba(0,0,0,0.8);
         }
 
-        .header-panel h1 {
-            font-size: 1.9rem;
+        h1 {
+            font-size: 2.2rem;
             color: #ff3d00;
             letter-spacing: 2px;
-            margin-bottom: 6px;
+            margin-bottom: 25px;
             font-weight: 900;
-            text-shadow: 0 0 15px rgba(255, 61, 0, 0.4);
+            text-shadow: 0 0 15px rgba(255, 61, 0, 0.3);
         }
 
-        .header-panel p {
-            font-size: 0.85rem;
-            color: #777777;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .filter-container {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding: 5px 2px 10px 2px;
-            scrollbar-width: none;
-        }
-        
-        .filter-container::-webkit-scrollbar {
-            display: none;
-        }
-
-        .filter-btn {
-            background: #0a0a0a;
-            color: #888888;
-            border: 1px solid #1a1a1a;
-            padding: 9px 18px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.85rem;
-            white-space: nowrap;
-            transition: all 0.2s ease;
-        }
-
-        .filter-btn.active, .filter-btn:hover {
-            background: #ffffff;
-            color: #000000;
-            border-color: #ffffff;
-            box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
-        }
-
-        .kesinti-listesi {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .kesinti-kart {
-            background: #0a0a0a;
-            border: 1px solid #161616;
-            border-radius: 14px;
-            padding: 18px;
-            transition: border-color 0.2s ease;
-        }
-
-        .kesinti-kart.elektrik { 
-            border-left: 4px solid #ffea00; 
-        }
-        .kesinti-kart.su { 
-            border-left: 4px solid #00b0ff; 
-        }
-
-        .kart-ust {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .konum-box {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-
-        .sehir-etiket {
-            background: #ff3d00;
-            color: white;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 0.7rem;
+        /* ⏳ Sayaç Kutusu */
+        .countdown {
+            font-size: 3.5rem;
             font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .ilce-etiket {
-            background: #1a1a1a;
-            color: #cccccc;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: bold;
-        }
-
-        .kurum-etiket {
-            font-size: 0.65rem;
-            color: #666666;
-            font-weight: bold;
+            font-family: monospace;
             background: #111111;
-            padding: 3px 6px;
-            border-radius: 4px;
-            border: 1px solid #222222;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px dashed #222;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+            display: inline-block;
+            min-width: 290px;
         }
 
-        .kesinti-detay h3 {
-            font-size: 1.05rem;
-            margin-bottom: 5px;
-            color: #ffffff;
-            font-weight: 600;
+        /* 📢 Durum Yazısı */
+        .status-text {
+            font-size: 1rem;
+            color: #888888;
+            font-weight: bold;
+            line-height: 1.5;
+            letter-spacing: 0.5px;
         }
 
-        .kesinti-detay p {
-            font-size: 0.85rem;
-            color: #999999;
-            line-height: 1.45;
-        }
-
-        .zaman-bilgisi {
-            margin-top: 12px;
-            font-size: 0.75rem;
-            color: #555555;
-            display: flex;
-            justify-content: space-between;
-            border-top: 1px solid #161616;
-            padding-top: 10px;
-        }
-
+        /* 🔒 Telif Hakkı Alanı */
         footer {
-            width: 100%;
-            max-width: 650px;
+            margin-top: 40px;
             text-align: center;
-            padding: 25px 10px;
-            margin-top: 30px;
-            border-top: 1px solid #111111;
         }
 
         footer p {
@@ -191,182 +80,87 @@
             letter-spacing: 1px;
             font-family: 'Courier New', Courier, monospace;
         }
+
+        /* Mobil Cihazlar İçin Uyum (Responsive Fix) */
+        @media (max-width: 480px) {
+            .countdown {
+                font-size: 2.5rem;
+                min-width: 220px;
+                padding: 15px;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            .status-text {
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div class="main-wrapper">
-        <div class="header-panel">
-            <h1>KESİNTİ VAR!</h1>
-            <p>⚡ Canlı Altyapı Arıza & Kesinti Takip Merkezi</p>
+    <div class="container">
+        <h1>KESİNTİ VAR</h1>
+        
+        <div class="countdown" id="timer">00:00:00</div>
+        
+        <div class="status-text" id="statusMessage">
+            Büyük Sunucu Maliyetleri Yüzünden Kapatılıyor.
         </div>
-
-        <div class="filter-container">
-            <button class="filter-btn active">Tüm Şehirler</button>
-            <button class="filter-btn">İstanbul</button>
-            <button class="filter-btn">Çanakkale</button>
-            <button class="filter-btn">Bursa</button>
-            <button class="filter-btn">Balıkesir</button>
-            <button class="filter-btn">Yalova</button>
-        </div>
-
-        <div class="kesinti-listesi" id="kesintiHavuzu"></div>
     </div>
 
     <footer>
         <p>&copy; 2026 Efe Studios. Tüm hakları saklıdır. Telif hakları sonsuza dek burada kalacak.</p>
     </footer>
 
-    <!-- ⚙️ VERİ BAĞLANTI, VERİ ÇEKME VE FİLTRELEME MOTORU -->
     <script>
-        const PROXY = "https://api.allorigins.win/raw?url=";
-        const API_URLS = {
-            uedas: "https://ogm.uedas.com.tr/api/v1/kesintiler/aktif", 
-            bedas: "https://api.bedas.com.tr/v1/kesintiler/current",
-            iski: "https://api.iski.gov.tr/v2/kesintiler/aktif"
-        };
+        // Hedef Zaman: 1 Temmuz 2026 Saat 00:00:00
+        const hedefTarih = new Date("July 1, 2026 00:00:00").getTime();
 
-        document.addEventListener("DOMContentLoaded", () => {
-            setupFilters();
-            canliVerileriGetir();
-        });
+        const timerElement = document.getElementById("timer");
+        const statusElement = document.getElementById("statusMessage");
 
-        function setupFilters() {
-            const buttons = document.querySelectorAll('.filter-btn');
-            buttons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelector('.filter-btn.active').classList.remove('active');
-                    btn.classList.add('active');
-                    const secilenSehir = btn.textContent.trim();
-                    filtrele(secilenSehir);
-                });
-            });
-        }
+        function sayaciGuncelle() {
+            const simdi = new Date().getTime();
+            const kalanSure = hedefTarih - simdi;
 
-        // 🔍 Ekrandaki Kartları Şehre Göre Süzme Fonksiyonu
-        function filtrele(sehir) {
-            const kartlar = document.querySelectorAll('.kesinti-kart');
-            let counter = 0;
-            
-            // 🔥 BUG FIX: Sayfada biriken ne kadar eski "bosUyari" varsa hepsini döngüyle temizler!
-            const eskiUyarilar = document.querySelectorAll('#bosUyari');
-            eskiUyarilar.forEach(uyari => uyari.remove());
+            // Zaman hesaplamaları (Gün, Saat, Dakika, Saniye)
+            const gun = Math.floor(kalanSure / (1000 * 60 * 60 * 24));
+            const saat = Math.floor((kalanSure % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const dakika = Math.floor((kalanSure % (1000 * 60 * 60)) / (1000 * 60));
+            const saniye = Math.floor((kalanSure % (1000 * 60)) / 1000);
 
-            kartlar.forEach(kart => {
-                const kartSehri = kart.querySelector('.sehir-etiket').textContent.trim();
-                if (sehir === "Tüm Şehirler" || kartSehri === sehir) {
-                    kart.style.display = "block";
-                    counter++;
-                } else {
-                    kart.style.display = "none";
+            // Süre henüz bitmediyse
+            if (kalanSure > 0) {
+                // Eğer 1 günden fazla varsa Gün bilgisini de ekle, yoksa sadece Saat:Dakika:Saniye göster
+                let formatliZaman = "";
+                if (gun > 0) {
+                    formatliZaman += gun + "g ";
                 }
-            });
+                
+                formatliZaman += 
+                    saat.toString().padStart(2, '0') + ":" + 
+                    dakika.toString().padStart(2, '0') + ":" + 
+                    saniye.toString().padStart(2, '0');
 
-            const havuz = document.getElementById('kesintiHavuzu');
-            if (counter === 0) {
-                havuz.insertAdjacentHTML('beforeend', `
-                    <div id='bosUyari' style='text-align:center; padding:35px 20px; color:#00e676; font-weight:bold; background:#0a0a0a; border-radius:14px; border:1px dashed #111;'>
-                        🟢 ${sehir} genelinde şu an planlı bir kesinti bulunmuyor!
-                    </div>
-                `);
+                timerElement.innerText = formatliZaman;
+                statusElement.innerText = "Büyük Sunucu Maliyetleri Yüzünden Kapatılıyor.";
+                statusElement.style.color = "#888888";
+            } 
+            // Süre bittiyse (1 Temmuz 00:00 ve sonrası)
+            else {
+                timerElement.innerText = "00:00:00";
+                statusElement.innerText = "Büyük Sunucu Maliyeti Yüzünden Kapatıldı.";
+                statusElement.style.color = "#ff3d00"; // Dikkat çekmesi için kırmızı tonu
+                clearInterval(zamanlayiciDongusu); // Süre bittiği için döngüyü durdur
             }
         }
 
-        async function canliVerileriGetir() {
-            const havuz = document.getElementById('kesintiHavuzu');
-            havuz.innerHTML = "<div style='text-align:center; padding:20px; color:#555;'>🔄 Canlı kurum verileri yükleniyor...</div>";
+        // Sayacı her saniye başı (1000 ms) çalıştır
+        const zamanlayiciDongusu = setInterval(sayaciGuncelle, 1000);
 
-            try {
-                havuz.innerHTML = ""; 
-
-                try {
-                    const uedasRes = await fetch(PROXY + encodeURIComponent(API_URLS.uedas));
-                    const uedasData = await uedasRes.json();
-                    
-                    if (Array.isArray(uedasData)) {
-                        uedasData.forEach(item => {
-                            const sehirAdi = ilkHarfiBuyut(item.ilAdi || item.sehir); 
-                            const ilceAdi = ilkHarfiBuyut(item.ilceAdi || item.ilce);
-                            
-                            kartOlustur(
-                                sehirAdi,
-                                ilceAdi,
-                                "⚡ UEDAŞ",
-                                "elektrik",
-                                item.kesintiNedeni || "Şebeke Çalışması",
-                                item.etkilenenBölgeler || item.acıklama || "Bölgede altyapı çalışması yapılmaktadır.",
-                                item.sure || "Belirtilmedi",
-                                item.baslangicSaati || "--:--"
-                            );
-                        });
-                    }
-                } catch(e) { console.error("UEDAŞ API hatası:", e); }
-
-                try {
-                    const bedasRes = await fetch(PROXY + encodeURIComponent(API_URLS.bedas));
-                    const bedasData = await bedasRes.json();
-                    
-                    if (Array.isArray(bedasData)) {
-                        bedasData.forEach(item => {
-                            kartOlustur("İstanbul", item.ilce, "🔌 BEDAŞ", "elektrik", "Planlı Kesinti", item.semtler, item.sure + " Saat", item.saat);
-                        });
-                    }
-                } catch(e) { console.error("BEDAŞ API hatası:", e); }
-
-                try {
-                    const iskiRes = await fetch(PROXY + encodeURIComponent(API_URLS.iski));
-                    const iskiData = await iskiRes.json();
-                    
-                    if (Array.isArray(iskiData)) {
-                        iskiData.forEach(item => {
-                            kartOlustur("İstanbul", item.ilce, "💧 İSKİ", "su", item.sebep || "Arıza Onarım", item.mahalleler, "Çalışma Sürüyor", item.saat);
-                        });
-                    }
-                } catch(e) { console.error("İSKİ API hatası:", e); }
-
-                if (havuz.innerHTML === "") {
-                    havuz.innerHTML = `
-                        <div id='bosUyari' style='text-align:center; padding:35px 20px; color:#00e676; font-weight:bold; background:#0a0a0a; border-radius:14px; border:1px dashed #111;'>
-                            🟢 Tüm şehirler temiz! Şu an aktif hiçbir kesinti bulunamadı.
-                        </div>
-                    `;
-                }
-
-            } catch (error) {
-                havuz.innerHTML = "<div style='text-align:center; color:#ff5252; padding:20px;'>❌ Canlı veriler alınırken bir sorun oluştu.</div>";
-                console.error("Genel Veri Çekme Hatası:", error);
-            }
-        }
-
-        function kartOlustur(sehir, ilce, kurum, tur, baslik, detay, sure, saat) {
-            const havuz = document.getElementById('kesintiHavuzu');
-            
-            const kartHtml = `
-                <div class="kesinti-kart ${tur}">
-                    <div class="kart-ust">
-                        <div class="konum-box">
-                            <span class="sehir-etiket">${sehir}</span>
-                            <span class="ilce-etiket">${ilce}</span>
-                        </div>
-                        <span class="kurum-etiket">${kurum}</span>
-                    </div>
-                    <div class="kesinti-detay">
-                        <h3>${baslik}</h3>
-                        <p>${detay}</p>
-                    </div>
-                    <div class="zaman-bilgisi">
-                        <span>⏳ Süre: ${sure}</span>
-                        <span>🕒 Başlangıç: ${saat}</span>
-                    </div>
-                </div>
-            `;
-            havuz.insertAdjacentHTML('beforeend', kartHtml);
-        }
-
-        function ilkHarfiBuyut(str) {
-            if(!str) return "Bilinmiyor";
-            return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-        }
+        // Sayfa ilk yüklendiğinde 1 saniye boş kalmasın diye hemen tetikle
+        sayaciGuncelle();
     </script>
 </body>
 </html>
